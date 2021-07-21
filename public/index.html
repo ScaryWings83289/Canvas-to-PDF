@@ -80,34 +80,29 @@
         Your browser does not support the HTML5 canvas tag.
     </canvas>
 
-    <button class="download" onclick="makePDF()">Download the PDF</button>
+    <button class="download" onclick='createAndDownloadPdf()'>Download the PDF</button>
 
-    <!-- JSPDF CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-    <!-- HTML2PDF CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js" integrity="sha512-OqcrADJLG261FZjar4Z6c4CfLqd861A3yPNMb+vRQ2JwzFT49WT4lozrh3bcKxHxtDTgNiqgYbEUStzvZQRfgQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        window.html2canvas = html2canvas;
-        window.jsPDF = window.jspdf.jsPDF;
 
         function myFunction(color) {
             var c = document.getElementById("myCanvas");
+            c.setAttribute("class", color);
             var ctx = c.getContext("2d");
             ctx.fillStyle = `${color}`;
             ctx.fillRect(20, 20, 460, 360);
         }
 
-        function makePDF() {
-            html2canvas(document.querySelector("#myCanvas"), {
-                allowTaint: false,
-                useCORS: true,
-                scale: 2
-            }).then(canvas => {
-                const img = canvas.toDataURL('image/png');
-                const doc = new jsPDF();
-                doc.addImage(img, 'PNG', 7, 13, 200, 150);
-                doc.save('canvas');
-            });
+        createAndDownloadPdf = () => {
+            axios.post('/create-pdf', {
+                color: document.getElementById("myCanvas").className,
+            })
+            .then(() => axios.get('fetch-pdf', { responseType: 'blob' }))
+            .then((res) => {
+                const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+                const link=window.URL.createObjectURL(pdfBlob);
+                window.location=link;
+            })
         }
 
     </script>

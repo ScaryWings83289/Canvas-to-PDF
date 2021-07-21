@@ -9,6 +9,11 @@ module.exports = ({ color }) => {
             <title>Canvas</title>
             <style>
                 .myCanvas {
+                    margin: auto;
+                    display: block;
+                    position: absolute
+                    left: 0;
+                    right: 0;
                     border:1px solid #d3d3d3; 
                     background-color: ${color};
                 }
@@ -16,7 +21,7 @@ module.exports = ({ color }) => {
         </head>
         <body>
 
-            <canvas class="myCanvas" width="970" height="500">
+            <canvas class="myCanvas" width="500" height="400">
                 Your browser does not support the HTML5 canvas tag.
             </canvas>
 
